@@ -1,0 +1,17 @@
+!/bin/bash
+#Este script permite hacer un backup de cualquier carpeta desde un móvil Android a un sistema Ubuntu.
+
+#Primera parte: declarar las rutas necesarias para evitar pringar demasiado el script y añadir algo de privacidad.
+prima=/run/user/1000/gvfs
+secunda=home/$USER/Desktop/Backupmovil
+#Segunda parte: búsqueda y guardado de la ruta del móvil.
+echo "Buscando dispositivo..."
+cd /
+cd $prima
+tercia="$(echo *)"
+#Tercera parte: enrutado hasta la carpeta objetivo
+cd "$prima/$tercia/Almac. interno"
+echo "Dispositivo encontrado. Copiando archivos..."
+cp -R Android/ /$secunda/Android-$(date +"%A-%d-%m-%Y-%r")
+echo "He terminado. Hasta pronto"
+sleep 2
