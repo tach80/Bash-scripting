@@ -1,17 +1,27 @@
 !/bin/bash
-#Este script permite hacer un backup de cualquier carpeta desde un móvil Android a un sistema Ubuntu.
+# This script lets you make a backup of all Android device folders to an
+# Ubuntu system. Of course, only user folders can be copied.
 
-#Primera parte: declarar las rutas necesarias para evitar pringar demasiado el script y añadir algo de privacidad.
-prima=/run/user/1000/gvfs
-secunda=home/$USER/Desktop/Backupmovil
-#Segunda parte: búsqueda y guardado de la ruta del móvil.
-echo "Buscando dispositivo..."
+# Chapter one: declaring needed routes to avoid the script getting messy.
+DEV_ROUTE=/run/user/1000/gvfs
+BACKUPTARGET=home/$USER/PhoneBackup
+
+# Chapter two: look for the device and store its route.
+echo "Looking for the device..."
 cd /
-cd $prima
-tercia="$(echo *)"
-#Tercera parte: enrutado hasta la carpeta objetivo
-cd "$prima/$tercia/Almac. interno"
-echo "Dispositivo encontrado. Copiando archivos..."
-cp -R Android/ /$secunda/Android-$(date +"%A-%d-%m-%Y-%r")
-echo "He terminado. Hasta pronto"
+cd $DEV_ROUTE
+DEV_ROOT="$(echo *)"
+cd "$DEV_ROUTE/$DEV_ROOT"
+DEV_STORAGE="$(echo *)"
+
+# Chapter three: routing to target folder and copying files.
+cd "$DEV_ROUTE/$DEV_ROOT/$DEV_STORAGE"
+echo "Found device. Copying folders..."
+# Let's do it right and add a date to folder name.
+cp -R Android/ /$BACKUPTARGET/Android-$(date +"%A-%d-%m-%Y-%r")
+
+# There's no need to be rude.
+echo "I finished. See you soon."
+
+# A couple seconds before returning to bash.
 sleep 2
