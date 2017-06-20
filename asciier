@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# Character to ASCII number converter.
+# Let's make it nice and easy.
+
+# VARIABLES.
+EXIT="$HOME/output" # Place to store the ASCII sequence.
+
+
+# Let's make the user choose if he/she wants a string
+# or maybe parse a text file.
+
+echo "Hello, and welcome to this ASCII converter."
+echo "What do you want to translate? A string or a full file?"
+echo "1) A string."
+echo "2) Content of a text file."
+
+echo -n "Please, select option by number: "
+read ENTRY
+
+# Option 1: a string.
+if [ $ENTRY -eq 1 ]; then
+	echo -n "Ok, tell me your string: "
+	read STRING
+# Option 2: translate the content of a file.
+elif [ $ENTRY -eq 2 ]; then
+	echo -n "Ok, tell me the full route to the file: "
+	read ROUTE
+	STRING=$(<$ROUTE)
+fi
+
+
+# Parsing the characters, one at a time.
+for ((i=0; i<${#STRING}; i++)); do # Advance if there is still characters.
+	printf "%03d " \'${STRING:$i:1} >> $EXIT # Sácalos a archivo.
+	j=$i+1 # Auxiliar.
+	if [[ $((j%8)) -eq 0 ]]; then # Each 8 characters...
+		printf "\n" >> $EXIT # ... Insert a new line.
+	fi
+done
+printf "\n" >> $EXIT # To insert a new line at the end.
