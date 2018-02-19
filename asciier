@@ -32,7 +32,7 @@ fi
 
 # Parsing the characters, one at a time.
 for ((i=0; i<${#STRING}; i++)); do # Advance if there is still characters.
-	printf "%03d " \'${STRING:$i:1} >> $EXIT # Sácalos a archivo.
+	printf "%03d " \'${STRING:$i:1} >> $EXIT # Piping them to the file.
 	j=$i+1 # Auxiliar.
 	if [[ $((j%8)) -eq 0 ]]; then # Each 8 characters...
 		printf "\n" >> $EXIT # ... Insert a new line.
