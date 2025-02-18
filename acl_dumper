@@ -1,0 +1,91 @@
+#!/bin/bash
+
+# Script para volcado de permisos de archivo.
+
+# Quiero un script que recorra recursivamente todas las subcarpetas
+# desde una carpeta dada, y vuelque en texto los permisos de todos
+# los archivos que encuentre, en un formato que luego pueda pasar
+# por otro script que recupere esos archivos.
+
+# Veamos... Cómo se hace esto...
+
+# Paso 0: variables de apoyo.
+
+OUTPUT="/home/operador/dumped.txt" # Archivo de salida.
+TEMP="/home/operador/temp.txt" # Archivo temporal.
+ROUTE="/" # Auxiliar, para rutas.
+
+# Genero los archivos de apoyo.
+# Mejor en una función. Para acortar un poco.
+# Puede que utilice esta función para purgar el temporal.
+filecreator() {
+	if [ -e $1 ]; then
+		touch $1
+	else
+		rm -f $1
+		touch $1
+	fi
+}
+
+filecreator $TEMP
+filecreator $OUTPUT
+
+# Paso 1: elegir carpeta.
+# Algo sencillo para empezar.
+# Ya meteré código para hacerlo interactivo.
+FOLDER="/home/operador/tryhard"
+
+# Paso 2: mostrar los ítems que cotnenga la carpeta y los volcamos en el temporal.
+
+# Esta instrucción es un poco complicada, aunque más potente que ls.
+# -c: formato específico.
+# %a: permisos del archivo en octal.
+# %n: nombre del archivo.
+# %g: grupo propietario del archivo, por ID.
+# %u: usuario propietario del archivo, por ID.
+# %G: grupo propietario del archivo, por nombre.
+# %U: usuario propietario del archivo, por nombre.
+# %F: tipo de ítem.
+
+# Imprimimos y volcamos.
+stat -c "%a %n %g %u %G %U %F" * >> $TEMP
+
+#ls -lah $FOLDER >> $TEMP
+
+# Paso 3: parseo del archivo temporal. Generación de árboles de archivo.
+# Cogemos los archivos y generamos el árbol de archivos.
+
+# Tengo que hacer código que se llame a sí mismo de manera recursiva. Lo único que
+# se me ocurre es generar una función y ponerle condicionales para que se llame a sí
+# misma cuando sea necesario.
+
+# Esta función debe coger un archivo con datos, hacer el parseo y, si localiza carpetas,
+# volcar sus datos en otro archivo temporal y llamarse a sí misma con ese temporal como
+# nuevo parámetro.
+
+i=0 # Variable auxiliar, contador externo para parser().
+parser() { # En i=0, el parámetro es $OUTPUT: parser $OUTPUT
+	for i in file; do
+		if [ cut -d " " -f7 -eq "directory" ]; then
+			# Creamos archivo temporal-
+			filecreator $TEMPORALFILENAME
+			# Volcamos los datos.
+			# Pero, ¿qué ruta hay que poner aquí?
+			stat -c "" * >> $TEMPORALFILENAME
+			# Invocamos de nuevo el parser.
+			parser $TEMPORALFILENAME
+		fi
+	done < $OUTPUT
+}
+
+# Paso 3: separar las carpetas de los archivos, en dos listas.
+# Paso 4: volcar los permisos de los archivos.
+# Paso 5: pasar la carpeta como parámetro de nuevo.
+# Paso 6: repetir proceso.
+
+
+
+
+
+
+
